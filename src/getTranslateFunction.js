@@ -72,12 +72,12 @@ export default (translations, lang, fallbackLang) => {
       return interpolateParams(textKey, params);
     }
 
-    let message = langMessages ? resolve(langMessages, textKey ) : undefined;
+    let message = langMessages ? resolve(textKey, langMessages ) : undefined;
     if (message === undefined || message === '') {
       // If don't have literal translation and have fallback lang, try
       // to get from there.
       if (fallbackLangMessages) {
-        let literal = resolve(fallbackLangMessages, textKey)
+        let literal = resolve(textKey, fallbackLangMessages)
         if (literal !== undefined && literal !== '') {
           return interpolateParams(literal, params);
         }
