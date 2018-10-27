@@ -50,6 +50,11 @@ const getOptionValue = (options, key, defaultValue) => {
   return options[key] === undefined ? (defaultValue || null)  : options[key]
 }
 
+function resolve(path, obj=self, separator='.') {
+  var properties = Array.isArray(path) ? path : path.split(separator)
+  return properties.reduce((prev, curr) => prev && prev[curr], obj)
+}
+
 export default (translations, lang, fallbackLang) => {
   const langMessages = getLangMessages(translations, lang);
   const fallbackLangMessages = fallbackLang ? getLangMessages(translations, fallbackLang) : undefined;
@@ -67,12 +72,12 @@ export default (translations, lang, fallbackLang) => {
       return interpolateParams(textKey, params);
     }
 
-    let message = langMessages ? langMessages[textKey] : undefined;
+    let message = langMessages ? resolve(langMessages, textKey ) : undefined;
     if (message === undefined || message === '') {
       // If don't have literal translation and have fallback lang, try
       // to get from there.
       if (fallbackLangMessages) {
-        let literal = fallbackLangMessages[textKey]
+        let literal = resolve(fallbackLangMessages, textKey)
         if (literal !== undefined && literal !== '') {
           return interpolateParams(literal, params);
         }
